@@ -45,6 +45,7 @@ const handleOnMouseMove = (e: MouseEvent) => {
 }
 
 function checkAuth() {
+    // @ts-ignore
     return status?.value === 'authenticated' && userData?.value?.user.admin
 }
 

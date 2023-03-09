@@ -1,38 +1,46 @@
 <template>
     <div class="main">
-        <template>
-            <div v-if="error">
-                <h1>Error</h1>
-                <p>{{ error?.value }}</p>
-            </div>
-            <article v-else :style="{ backgroundImage: 'url(' + data.image + ')'}">
-            <div class="actions">
-                <a v-if="checkAuth()" @click="deletePost()">Delete Post</a>
-            </div>
+        <div v-if="error">
+            <h1>Error</h1>
+            <p>{{ error?.value }}</p>
+        </div>
+        <article v-else :style="{ backgroundImage: 'url(' + data.image + ')'}">
+        <div class="actions">
+            <a v-if="checkAuth()" @click="deletePost()">Delete Post</a>
+        </div>
 
-            <div class="image-mask"></div>
-            <h1 class="title">{{ data.title }}</h1>
-            <p class="body">{{ data.body }}</p>
-            </article>
-        </template>
+        <div class="image-mask"></div>
+        <h1 class="title">{{ data.title }}</h1>
+        <p class="body">{{ data.body }}</p>
+        </article>
     </div>
 </template>
 
 <script setup lang="ts">
+const { data: userData, status } = useSession()
 const route = useRoute()
 const config = useRuntimeConfig();
 
-const { data: userData, status } = useSession()
 
-function checkAuth() {
-    return status?.value === 'authenticated' && userData?.value?.user.admin
+const {data, error} = await useFetch(
+    config.API_BASE_URL + 'blog/posts/' + route.params.id + '/',
+    {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    }
+)
+if (error) {
+    if (error?.value?.name === 'FetchError') {
+        navigateTo('/dev-log')
+    }
 }
 
 async function deletePost() {
     const json = JSON.parse(JSON.stringify(userData?.value, undefined, 4))
     const jwt = json.access
 
-    const {data} = await useFetch(
+    const {data, error} = await useFetch(
         config.API_BASE_URL + 'blog/posts/' + route.params.id + '/',
         {
             method: 'DELETE',
@@ -46,16 +54,9 @@ async function deletePost() {
     navigateTo('/dev-log')
 }
 
-const { data, error } = await useFetch(
-    config.API_BASE_URL + 'blog/posts/' + route.params.id + '/',
-    {
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    }
-)
-if (error?.value.name === 'FetchError') {
-    navigateTo('/dev-log')
+function checkAuth() {
+    // @ts-ignore
+    return status?.value === 'authenticated' && userData?.value?.user.admin
 }
 
 </script>
