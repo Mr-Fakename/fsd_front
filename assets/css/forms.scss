@@ -1,0 +1,52 @@
+form {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding-top: 5em;
+	max-width: 50%;
+	margin: 0 auto;
+
+	label {
+		color: white;
+	}
+
+	input,
+	button {
+		padding: 10px;
+		border: none;
+		border-radius: 5px;
+		outline: none;
+	}
+
+	textarea {
+		padding: 10px;
+		border: none;
+		border-radius: 5px;
+		outline: none;
+	}
+
+	input[type="submit"],
+	button {
+		background-color: rgb(20, 20, 20);
+		color: white;
+		border: 1px solid white;
+		cursor: pointer;
+		width: 50%;
+		margin: 0 auto;
+
+		&:hover {
+			background-color: rgb(40, 40, 40);
+		}
+
+		&.disabled {
+			background-color: rgb(20, 20, 20);
+			color: rgb(100, 100, 100);
+			border: 1px solid rgb(100, 100, 100);
+			cursor: not-allowed;
+		}
+
+		&.submit {
+			margin: 3em 0;
+		}
+	}
+}
